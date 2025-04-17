@@ -1,7 +1,5 @@
 import { defineConfig, type Plugin } from "vite";
-import devServer from "@hono/vite-dev-server";
-import cloudflareAdapter from '@hono/vite-dev-server/cloudflare';
-import nodeAdapter from '@hono/vite-dev-server/node';
+import { cloudflare } from "@cloudflare/vite-plugin";
 
 // https://github.com/brettimus/ts-vfs-test/blob/main/vite.config.ts#L28C1-L42C2
 const polyfillTypescriptPackage = (): Plugin => {
@@ -9,7 +7,8 @@ const polyfillTypescriptPackage = (): Plugin => {
         name: "fix-typescript-filename",
         transform(code, id) {
             // Only transform the typescript package
-            if (id.includes("node_modules/typescript/")) {
+            // HACK - This is the only way I could find to get the correct filename for the typescript package
+            if (id.includes("node_modules") && id.includes("typescript.js")) {
                 // Replace __filename with a string that won't break in Cloudflare Workers
                 // Replace Node.js specific variables with appropriate defaults
                 return code
@@ -21,7 +20,7 @@ const polyfillTypescriptPackage = (): Plugin => {
 }
 
 export default defineConfig({
-    plugins: [polyfillTypescriptPackage(), devServer({entry: "src/index.ts", injectClientScript: false, adapter: nodeAdapter})],
+  plugins: [polyfillTypescriptPackage(), cloudflare()],
 });
 
 
