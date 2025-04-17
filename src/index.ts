@@ -6,11 +6,7 @@ import * as schema from "./db/schema";
 import {createDefaultMapFromCDN, createVirtualCompilerHost, createSystem} from "@typescript/vfs";
 import ts from "typescript"
 
-type Bindings = {
-  DB: D1Database;
-};
-
-const app = new Hono<{ Bindings: Bindings }>();
+const app = new Hono();
 
 app.get("/", (c) => {
   return c.text("Honc from above! ☁️🪿");
