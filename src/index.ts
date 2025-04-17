@@ -1,8 +1,5 @@
-import { instrument } from "@fiberplane/hono-otel";
 import { createFiberplane, createOpenAPISpec } from "@fiberplane/hono";
-import { drizzle } from "drizzle-orm/d1";
 import { Hono } from "hono";
-import * as schema from "./db/schema";
 import {createDefaultMapFromCDN, createVirtualCompilerHost, createSystem} from "@typescript/vfs";
 import ts from "typescript"
 
@@ -129,7 +126,3 @@ app.use("/fp/*", createFiberplane({
 
 
 export default app;
-
-// Export the instrumented app if you've wired up a Fiberplane-Hono-OpenTelemetry trace collector
-//
-// export default instrument(app);
