@@ -9,22 +9,27 @@ const app = new Hono();
 export default app;
 `;
 
-compile(code)
+// Additional npm packages to include type definitions for
+const additionalPackages = ["hono"];
+
+compile(code, additionalPackages)
   .then((a) => {
-    console.log("success!!!");
-    console.log(a);
+    console.log(JSON.stringify(a, null, 2));
   })
   .catch((e) => {
     console.log("error!!!");
     console.error(e);
   });
 
-async function compile(code: string) {
-  const response = await fetch("http://localhost:8437/compile", {
+async function compile(code: string, packages: string[] = []) {
+  const response = await fetch("http://localhost:8437/compile?debug=true", {
     method: "POST",
+    headers: {
+      "x-additional-packages": JSON.stringify(packages)
+    },
     body: code,
   });
 
-  return response.text();
+  return response.json();
 }
 

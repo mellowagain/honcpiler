@@ -1,4 +1,5 @@
 import { downloadTypeDefinitions } from "./download-type-definitions";
+import honoTypes from "./hono-types";
 import {
   libDts,
   decoratorsDts,
@@ -102,23 +103,38 @@ import {
 
 /**
  * Create a virutal fsMap with the typescript lib definitions and the Cloudflare Workers types
+ * @param additionalPackages Optional array of additional npm packages to include type definitions for
+ * @param debug Whether to output debug information
  */
-export async function createFsMap() {
+export async function createFsMap(additionalPackages: string[] = [], debug = false) {
   //const fsMap = await createDefaultMapFromCDN({ target: ts.ScriptTarget.ES2024 }, ts.version, false, ts);
   const fsMap = new Map<string, string>();
 
   addTypescriptLibs(fsMap);
+  addHonoTypes(fsMap);
 
   // Download Cloudflare Workers types
-  const workerTypes = await downloadTypeDefinitions("@cloudflare/workers-types");
+  const workerTypes = await downloadTypeDefinitions("@cloudflare/workers-types", debug);
   for (const [path, content] of workerTypes) {
     fsMap.set(path, content);
   }
 
+  // Download additional package types
+  for (const packageName of additionalPackages) {
+    if (debug) {
+      console.log(`Downloading type definitions for ${packageName}`);
+    }
+    const packageTypes = await downloadTypeDefinitions(packageName, debug);
+    for (const [path, content] of packageTypes) {
+      fsMap.set(path, content);
+    }
+    if (debug) {
+      console.log(`Added ${packageTypes.size} files for ${packageName}`);
+    }
+  }
+
   return fsMap;
 }
-
-
 
 /**
  * Add the typescript lib definitions to the fsMap
@@ -253,4 +269,37 @@ function addTypescriptLibs(fsMap: Map<string, string>) {
   fsMap.set("/lib.webworker.importscripts.d.ts", webWorkerImportScriptsDts);
   //fsMap.set("/lib.webworker.iterable.d.ts", webWorkerIterableDts);
 
+}
+
+function addHonoTypes(fsMap: Map<string, string>) {
+  // Add all the Hono type definition files
+  for (const typeDef of honoTypes) {
+    fsMap.set(typeDef.path, typeDef.content);
+  }
+  
+  // Add package.json for Hono to help TypeScript locate the types
+  const honoPackageJson = JSON.stringify({
+    name: "hono",
+    version: "3.10.0",
+    types: "dist/types/index.d.ts",
+    main: "dist/index.js",
+    module: "dist/index.mjs",
+    exports: {
+      ".": {
+        "types": "./dist/types/index.d.ts",
+        "import": "./dist/index.mjs",
+        "require": "./dist/index.js"
+      }
+    }
+  }, null, 2);
+  
+  fsMap.set("node_modules/hono/package.json", honoPackageJson);
+  
+  // Add an index.d.ts at the package root as an alternative entry point
+  if (fsMap.has("node_modules/hono/dist/types/index.d.ts")) {
+    const indexContent = fsMap.get("node_modules/hono/dist/types/index.d.ts");
+    if (indexContent) {
+      fsMap.set("node_modules/hono/index.d.ts", indexContent);
+    }
+  }
 }

@@ -16,9 +16,20 @@ app.post("/compile", async (c) => {
     body = foo;
   }
 
-  const a = await compileTypescript(body);
+  // Default packages to include
+  const additionalPackages: Array<string> = [];
+  
+  // Check if debug output is requested
+  const debug = c.req.query("debug") === "true";
+  
+  const a = await compileTypescript(body, additionalPackages, debug);
+  
+  // If debug is enabled, log loaded type definitions
+  if (debug) {
+    console.log("Loaded type definitions for packages:", additionalPackages);
+  }
 
-  return c.text(a);
+  return c.json(a);
 });
 
 /**
