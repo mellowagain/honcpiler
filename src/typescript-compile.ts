@@ -1,7 +1,6 @@
 import ts from "typescript"
-import { createFsMap } from "./fs-map";
-import { createVirtualCompilerHost } from "@typescript/vfs";
-import { createSystem } from "@typescript/vfs";
+import { createSystem, createVirtualCompilerHost } from "@typescript/vfs";
+import { createFsMap } from "./vfs";
 
 export type ErrorInfo = {
   message: string;
@@ -18,12 +17,15 @@ export async function compileTypescript(fileContents: string, additionalPackages
     target: ts.ScriptTarget.ESNext,
     module: ts.ModuleKind.ESNext,
     moduleResolution: ts.ModuleResolutionKind.Bundler,
-    lib: ["ESNext"/*, "webworker"*/],
+    lib: ["ESNext"],
     strict: true,
-    types: ["@cloudflare/workers-types"],  // Include Cloudflare Workers types
+    types: ["@cloudflare/workers-types"],
     skipLibCheck: true,
     noEmit: true,
-    traceResolution: debug // Enable module resolution tracing
+    // For debugging: Enable module resolution tracing
+    // This is useful to see how TypeScript resolves modules,
+    // in case you can't figure out why it's not picking up type definitions for a dependency
+    traceResolution: debug 
   };
 
   if (debug) {

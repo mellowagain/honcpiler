@@ -15,7 +15,8 @@
     "test:compile": "tsx scripts/remote-compile.ts",
     "test:compile:debug": "curl -X POST \"http://localhost:8437/compile?debug=true\" -d \"import { Hono } from 'hono'; const app = new Hono(); export default app;\"",
     "download-types": "tsx scripts/download-package-types.ts",
-    "copy-types": "tsx scripts/copy-type-definitions.ts"
+    "copy-types": "tsx scripts/copy-type-definitions.ts",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@fiberplane/hono": "0.4.4-beta.2",
