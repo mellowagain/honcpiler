@@ -1,18 +1,18 @@
 // Main hono type definitions
-import indexDts from "./files/index.ts?raw";
-import honoDts from "./files/hono.ts?raw";
-import honoBaseDts from "./files/hono-base.ts?raw";
-import contextDts from "./files/context.ts?raw";
-import requestDts from "./files/request.ts?raw";
-import routerDts from "./files/router.ts?raw";
-import typesDts from "./files/types.ts?raw";
+import indexDts from "./files/index.d.ts?raw";
+import honoDts from "./files/hono.d.ts?raw";
+import honoBaseDts from "./files/hono-base.d.ts?raw";
+import contextDts from "./files/context.d.ts?raw";
+import requestDts from "./files/request.d.ts?raw";
+import routerDts from "./files/router.d.ts?raw";
+import typesDts from "./files/types.d.ts?raw";
 
 // Utils type definitions
-import headersDts from "./files/utils/headers.ts?raw";
-import httpStatusDts from "./files/utils/http-status.ts?raw";
-import utilTypesDts from "./files/utils/types.ts?raw";
-import bodyDts from "./files/utils/body.ts?raw";
-import mimeDts from "./files/utils/mime.ts?raw";
+import headersDts from "./files/utils/headers.d.ts?raw";
+import httpStatusDts from "./files/utils/http-status.d.ts?raw";
+import utilTypesDts from "./files/utils/types.d.ts?raw";
+import bodyDts from "./files/utils/body.d.ts?raw";
+import mimeDts from "./files/utils/mime.d.ts?raw";
 
 // Define interface for type definition files
 interface TypeDefinition {

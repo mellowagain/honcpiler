@@ -31,6 +31,20 @@ for (const arg of args) {
   }
 }
 
+/**
+ * Resolves a package path, handling subpackages with forward slashes
+ */
+function resolvePackagePath(packageName: string): string {
+  // Handle subpackages with forward slashes
+  if (packageName.includes('/')) {
+    const parts = packageName.split('/');
+    const basePackage = parts[0];
+    const subPath = parts.slice(1).join('/');
+    return path.join(path.resolve('node_modules'), basePackage, subPath);
+  }
+  return path.join(path.resolve('node_modules'), packageName);
+}
+
 // Execute the function
 copyTypeDefinitions(options).catch(error => {
   console.error('Error copying type definitions:', error);
@@ -52,7 +66,7 @@ async function copyTypeDefinitions(options: { output?: string, package?: string 
   
   if (packageToProcess) {
     // Process a specific package
-    const packagePath = path.join(nodeModulesPath, packageToProcess);
+    const packagePath = resolvePackagePath(packageToProcess);
     if (fs.existsSync(packagePath)) {
       packageDirs.push(packagePath);
     } else {

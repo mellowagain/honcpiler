@@ -7,7 +7,9 @@ import { drizzle } from "drizzle-orm/d1";
 
 type Bindings = { DB: D1Database };
 
-const app = new Hono<{ Bindings: Bindings }>();
+type Variables = { db: any; };
+
+const app = new Hono<{ Bindings: Bindings, Variables: Variables }>();
 
 app.use(async (c, next) => {
   const db = drizzle(c.env.DB);

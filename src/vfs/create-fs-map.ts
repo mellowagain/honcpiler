@@ -1,5 +1,6 @@
 import { downloadTypeDefinitions } from "../download-type-definitions";
 import { addCloudflareWorkersTypes } from "./add-cloudflare-workers-types";
+import { addDrizzleTypes } from "./add-drizzle-types";
 import { addHonoTypes } from "./add-hono-types";
 import { addTypescriptLibs } from "./add-typescript-libs";
 
@@ -15,6 +16,7 @@ export async function createFsMap(additionalPackages: string[] = [], debug = fal
   addTypescriptLibs(fsMap);
   addHonoTypes(fsMap);
   addCloudflareWorkersTypes(fsMap);
+  addDrizzleTypes(fsMap);
 
   // Download additional package types
   for (const packageName of additionalPackages) {

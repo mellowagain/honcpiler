@@ -29,14 +29,14 @@ export async function compileTypescript(fileContents: string, additionalPackages
   };
 
   if (debug) {
-    console.log("Compiler options:", JSON.stringify(compilerOptions, null, 2));
-    console.log(`Virtual filesystem has ${fsMap.size} files`);
+    console.log("[debug] Compiler options:", JSON.stringify(compilerOptions, null, 2));
+    console.log("[debug] Virtual filesystem has", fsMap.size, "files");
     
     // Log files in the virtual filesystem that might be relevant to Hono
-    console.log("Files in virtual filesystem related to Hono:");
+    console.log("[debug] Files in virtual filesystem related to Hono:");
     const honoFiles = [...fsMap.keys()].filter(path => path.includes("hono"));
     for (const file of honoFiles) {
-      console.log(` - ${file}`);
+      console.log(`   - ${file}`);
     }
   }
 
