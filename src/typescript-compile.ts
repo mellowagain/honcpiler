@@ -2,16 +2,23 @@ import ts from "typescript"
 import { createSystem, createVirtualCompilerHost } from "@typescript/vfs";
 import { createFsMap } from "./vfs";
 
+export type InputFiles = {
+  path: string;
+  content: string;
+};
+
 export type ErrorInfo = {
   message: string;
   severity: "error" | "warning";
   location?: string;
 };
 
-export async function compileTypescript(fileContents: string, additionalPackages: string[] = [], debug = false): Promise<ErrorInfo[]> {
+export async function compileTypescript(input: InputFiles[], additionalPackages: string[] = [], debug = false): Promise<ErrorInfo[]> {
   const fsMap = await createFsMap(additionalPackages, debug);
 
-  fsMap.set("index.ts", fileContents);
+  for (let file of input) {
+    fsMap.set(file.path, file.content);
+  }
 
   const compilerOptions: ts.CompilerOptions = {
     target: ts.ScriptTarget.ESNext,

@@ -1,8 +1,18 @@
+/*
 import { createFiberplane, createOpenAPISpec } from "@fiberplane/hono";
 import { Hono } from "hono";
-import { compileTypescript } from "./typescript-compile";
 import foo from "./meow.ts?raw";
+ */
+import {compileTypescript, ErrorInfo, InputFiles} from "./typescript-compile";
+import { WorkerEntrypoint } from "cloudflare:workers";
 
+export default class Honcpiler extends WorkerEntrypoint {
+  async compileTypeScript(files: InputFiles[], additionalPackages: string[] = [], debug: boolean = false): Promise<ErrorInfo[]> {
+    return await compileTypescript(files, additionalPackages, debug);
+  }
+}
+
+/*
 const app = new Hono();
 
 app.get("/", (c) => {
@@ -35,7 +45,7 @@ app.post("/compile", async (c) => {
 /**
  * Serve a simplified api specification for your API
  * As of writing, this is just the list of routes and their methods.
- */
+ * /
 app.get("/openapi.json", c => {
   return c.json(createOpenAPISpec(app, {
     info: {
@@ -49,11 +59,11 @@ app.get("/openapi.json", c => {
  * Mount the Fiberplane api explorer to be able to make requests against your API.
  * 
  * Visit the explorer at `/fp`
- */
+ * /
 app.use("/fp/*", createFiberplane({
   app,
   openapi: { url: "/openapi.json" }
 }));
 
 
-export default app;
+export default app;*/
